@@ -1,18 +1,24 @@
 import os
-FRONTEND_HOST = 'http://localhost'
-PORTAL_NAME = 'MediaCMS'
-SECRET_KEY = 'ma!s3^b-cw!f#7s6s0m3*jx77a@riw(7701**(r=ww%w!2+yk2'
-POSTGRES_HOST = 'db'
-REDIS_LOCATION = "redis://redis:6379/1"
+
+FRONTEND_HOST = os.getenv('FRONTEND_HOST', 'http://localhost')
+PORTAL_NAME = os.getenv('PORTAL_NAME', 'MediaCMS')
+SECRET_KEY = os.getenv('SECRET_KEY', 'ma!s3^b-cw!f#7s6s0m3*jx77a@riw(7701**(r=ww%w!2+yk2')
+POSTGRES_HOST = os.getenv('POSTGRES_HOST', 'db')
+POSTGRES_PORT = os.getenv('POSTGRES_PORT', '5432')
+REDIS_LOCATION = os.getenv('REDIS_LOCATION', "redis://192.168.1.139:32761/1")
+POSTGRES_DB = os.getenv('POSTGRES_DB', 'mediacms')
+POSTGRES_USER = os.getenv('POSTGRES_USER', 'mediacms')
+POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'mediacms')
+
 
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
-        "NAME": "mediacms",
+        "NAME": POSTGRES_DB,
         "HOST": POSTGRES_HOST,
-        "PORT": "5432",
-        "USER": "mediacms",
-        "PASSWORD": "mediacms",
+        "PORT": POSTGRES_PORT,
+        "USER": POSTGRES_USER,
+        "PASSWORD": POSTGRES_PASSWORD,
     }
 }
 
@@ -32,4 +38,4 @@ CELERY_RESULT_BACKEND = BROKER_URL
 
 MP4HLS_COMMAND = "/home/mediacms.io/bento4/bin/mp4hls"
 
-DEBUG = os.getenv('DEBUG', False)
+DEBUG = os.getenv('DEBUG', True)
