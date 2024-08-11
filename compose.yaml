@@ -1,7 +1,8 @@
+version: "3"
+
 services:
   migrations:
-    build:
-      context: .
+    image: mediacms/mediacms:latest
     volumes:
       - ./:/home/mediacms.io/mediacms/
     environment:
@@ -21,8 +22,7 @@ services:
       db:
         condition: service_healthy
   web:
-    build:
-      context: .
+    image: mediacms/mediacms:latest
     deploy:
       replicas: 1
     ports:
@@ -37,8 +37,7 @@ services:
     depends_on:
       - migrations
   celery_beat:
-    build:
-      context: .
+    image: mediacms/mediacms:latest
     volumes:
       - ./:/home/mediacms.io/mediacms/
     environment:
@@ -50,8 +49,7 @@ services:
     depends_on:
       - redis
   celery_worker:
-    build:
-      context: .
+    image: mediacms/mediacms:latest
     deploy:
       replicas: 1
     volumes:
