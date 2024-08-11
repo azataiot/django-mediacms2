@@ -1,6 +1,8 @@
 services:
   migrations:
-    image: mediacms/mediacms:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile-ng
     volumes:
       - settings:/home/mediacms.io/mediacms/deploy/docker/
     environment:
@@ -17,15 +19,17 @@ services:
       ENABLE_CELERY_BEAT: 'no'
       ADMIN_USER: 'admin'
       ADMIN_EMAIL: 'admin@localhost'
-      #ADMIN_PASSWORD: 'uncomment_and_set_password_here'
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD}
     command: "./deploy/docker/prestart.sh"
     restart: on-failure
   web:
-    image: mediacms/mediacms:latest
+    build:
+      context: .
+      Dockerfile-ng: ./Dockerfile-ng
     deploy:
       replicas: 1
     ports:
-      - "80:80"
+      - "32780:80"
     volumes:
       - media:/home/mediacms.io/mediacms/media_files/
       - static:/home/mediacms.io/mediacms/static/
@@ -45,7 +49,9 @@ services:
       - migrations
 
   celery_beat:
-    image: mediacms/mediacms:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile-ng
     volumes:
       - settings:/home/mediacms.io/mediacms/deploy/docker/
     environment:
@@ -62,7 +68,9 @@ services:
       ENABLE_MIGRATIONS: 'no'
 
   celery_worker:
-    image: mediacms/mediacms:latest
+    build:
+      context: .
+      dockerfile: ./Dockerfile-ng
     deploy:
       replicas: 1
     volumes:

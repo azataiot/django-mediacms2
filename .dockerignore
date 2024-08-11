@@ -4,3 +4,17 @@ npm-debug.log
 .git
 .idea
 .code
+docs/
+.coveragerc
+.pre-commit-config.yaml
+AUTHORS.txt
+CONTRIBUTING.md
+HISTORY.rst
+CODE_OF_CONDUCT.md
+LICENSE
+HISTORY.md
+*.yaml
+*.yml
+install.sh
+install-rhel.sh
+pytest.ini
