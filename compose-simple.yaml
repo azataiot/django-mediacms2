@@ -1,0 +1,29 @@
+services:
+  web:
+    image: azataiot/mediacms:0.1
+    ports:
+      - "32780:80"
+    volumes:
+      - media_store:/home/mediacms.io/mediacms/media_files/
+      - static_store:/home/mediacms.io/mediacms/static/
+      - ./deploy/docker/local_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py
+    environment:
+      ADMIN_USER: 'admin'
+      ADMIN_EMAIL: 'info@azat.host'
+      ADMIN_PASSWORD: $ADMIN_PASSWORD
+      POSTGRES_HOST: $POSTGRES_HOST
+      POSTGRES_PORT: $POSTGRES_PORT
+      POSTGRES_DB: $POSTGRES_DB
+      POSTGRES_USER: $POSTGRES_USER
+      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
+      DEBUG: $DEBUG
+      EMAIL_HOST: $EMAIL_HOST
+      EMAIL_PORT: $EMAIL_PORT
+      EMAIL_HOST_USER: $EMAIL_HOST_USER
+      EMAIL_HOST_PASSWORD: $EMAIL_HOST_PASSWORD
+    restart: on-failure
+
+volumes:
+  postgres_data:
+  media_store:
+  static_store:

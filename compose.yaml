@@ -1,85 +1,59 @@
+x-common-variables: &common-variables
+  ENABLE_UWSGI: 'no'
+  ENABLE_NGINX: 'no'
+  ENABLE_CELERY_SHORT: 'no'
+  ENABLE_CELERY_LONG: 'no'
+  ENABLE_CELERY_BEAT: 'no'
+  ENABLE_MIGRATIONS: 'no'
+  POSTGRES_HOST: ${POSTGRES_HOST}
+  POSTGRES_PORT: ${POSTGRES_PORT}
+  POSTGRES_USER: ${POSTGRES_USER}
+  POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+  POSTGRES_DB: ${POSTGRES_DB}
+  DEBUG: ${DEBUG}
+
 services:
   migrations:
-    image: mediacms/mediacms:latest
-    volumes:
-      - ./deploy/docker/local_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py
+    image: azataiot/mediacms:0.1
     environment:
-      ENABLE_UWSGI: 'no'
-      ENABLE_NGINX: 'no'
-      ENABLE_CELERY_SHORT: 'no'
-      ENABLE_CELERY_LONG: 'no'
-      ENABLE_CELERY_BEAT: 'no'
+      <<: *common-variables
+      ENABLE_MIGRATIONS: 'yes'
       ADMIN_USER: 'admin'
-      ADMIN_EMAIL: 'admin@localhost'
+      ADMIN_EMAIL: 'info@azat.host'
       ADMIN_PASSWORD: $ADMIN_PASSWORD
-      POSTGRES_HOST: $POSTGRES_HOST
-      POSTGRES_PORT: $POSTGRES_PORT
-      POSTGRES_DB: $POSTGRES_DB
-      POSTGRES_USER: $POSTGRES_USER
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      DEBUG: $DEBUG
     command: "./deploy/docker/prestart.sh"
     restart: on-failure
 
   web:
-    image: mediacms/mediacms:latest
+    image: azataiot/mediacms:0.1
     ports:
       - "32780:80"
     volumes:
-      - media_store:/home/mediacms.io/mediacms/media_files/
-      - static_store:/home/mediacms.io/mediacms/static/
-      - ./deploy/docker/local_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py
+      - media:/home/mediacms.io/mediacms/media_files/
+      - static:/home/mediacms.io/mediacms/static/
     environment:
-      ENABLE_CELERY_BEAT: 'no'
-      ENABLE_CELERY_SHORT: 'no'
-      ENABLE_CELERY_LONG: 'no'
-      ENABLE_MIGRATIONS: 'no'
-      POSTGRES_HOST: $POSTGRES_HOST
-      POSTGRES_PORT: $POSTGRES_PORT
-      POSTGRES_DB: $POSTGRES_DB
-      POSTGRES_USER: $POSTGRES_USER
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      DEBUG: $DEBUG
+      <<: *common-variables
+      ENABLE_NGINX: 'yes'
+      ENABLE_UWSGI: 'yes'
 
   celery_beat:
-    image: mediacms/mediacms:latest
-    volumes:
-      - ./deploy/docker/local_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py
+    image: azataiot/mediacms:0.1
+    volumes_from:
+      - web
     environment:
-      ENABLE_UWSGI: 'no'
-      ENABLE_NGINX: 'no'
-      ENABLE_CELERY_SHORT: 'no'
-      ENABLE_CELERY_LONG: 'no'
-      ENABLE_MIGRATIONS: 'no'
-      POSTGRES_HOST: $POSTGRES_HOST
-      POSTGRES_PORT: $POSTGRES_PORT
-      POSTGRES_DB: $POSTGRES_DB
-      POSTGRES_USER: $POSTGRES_USER
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      DEBUG: $DEBUG
+      <<: *common-variables
+      ENABLE_CELERY_BEAT: 'yes'
 
   celery_worker:
-    image: mediacms/mediacms:latest
-    deploy:
-      replicas: 1
-    volumes:
-      - media_store:/home/mediacms.io/mediacms/media_files/
-      - static_store:/home/mediacms.io/mediacms/static/
-      - ./deploy/docker/local_settings.py:/home/mediacms.io/mediacms/deploy/docker/local_settings.py
+    image: azataiot/mediacms:0.1
+    volumes_from:
+      - web
     environment:
-      ENABLE_UWSGI: 'no'
-      ENABLE_NGINX: 'no'
-      ENABLE_CELERY_BEAT: 'no'
-      ENABLE_MIGRATIONS: 'no'
-      POSTGRES_HOST: $POSTGRES_HOST
-      POSTGRES_PORT: $POSTGRES_PORT
-      POSTGRES_DB: $POSTGRES_DB
-      POSTGRES_USER: $POSTGRES_USER
-      POSTGRES_PASSWORD: $POSTGRES_PASSWORD
-      DEBUG: $DEBUG
+      <<: *common-variables
+      ENABLE_CELERY_SHORT: 'yes'
+      ENABLE_CELERY_LONG: 'yes'
     depends_on:
       - migrations
 volumes:
-  postgres_data:
-  media_store:
-  static_store:
+  media:
+  static:

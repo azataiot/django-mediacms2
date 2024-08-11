@@ -10,6 +10,18 @@ POSTGRES_DB = os.getenv('POSTGRES_DB', 'mediacms')
 POSTGRES_USER = os.getenv('POSTGRES_USER', 'mediacms')
 POSTGRES_PASSWORD = os.getenv('POSTGRES_PASSWORD', 'mediacms')
 
+TIME_ZONE = "Europe/Istanbul"
+PORTAL_WORKFLOW = "public"
+REGISTER_ALLOWED = False
+
+# email settings
+DEFAULT_FROM_EMAIL = "info@azat.host"
+EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'password')
+EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'info@azat.host')
+SERVER_EMAIL = DEFAULT_FROM_EMAIL
+EMAIL_HOST = os.getenv('EMAIL_HOST', 'mail.azat.host')
+EMAIL_PORT = os.getenv('EMAIL_PORT', 587)
+ADMIN_EMAIL_LIST = ["info@azat.host"]
 
 DATABASES = {
     "default": {
